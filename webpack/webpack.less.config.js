@@ -1,5 +1,11 @@
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HappyPack = require('happypack');
+const os = require('os');
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+const lessHappyLoaderId = 'happypack-for-less-loader';
+const cssHappyLoaderId = 'happypack-for-css-loader';
+
 const isDebug = process.env.NODE_ENV !== 'production';
 
 const cssLoader = {
@@ -47,33 +53,58 @@ let plugins = [];
 if (isDebug) {
   loaders = [{
     test: /\.less$/,
-    use: ['style-loader', cssLoader, postcssLoader, lessLoader ]
+    loader: 'happypack/loader',
+    query: {id: lessHappyLoaderId}
   }, {
     test: /\.css$/,
-    loader: ['style-loader', cssLoader, postcssLoader ]
+    loader: 'happypack/loader',
+    query: {id: cssHappyLoaderId}
   }]
+
+  plugins = [new HappyPack({
+    id: lessHappyLoaderId,
+    threadPool: happyThreadPool,
+    loaders: ['style-loader', cssLoader, postcssLoader, lessLoader ]
+  }),  new HappyPack({
+    id: cssHappyLoaderId,
+    threadPool: happyThreadPool,
+    loaders: ['style-loader', cssLoader, postcssLoader ]
+  })]
 
 } else {
 
   loaders = [{
     test: /\.less$/,
-    use: [
-        MiniCssExtractPlugin.loader, 
-        cssLoader,
-        postcssLoader,
-        lessLoader
-    ]
+    use: [MiniCssExtractPlugin.loader, {
+      loader: 'happypack/loader',
+      query: {id: lessHappyLoaderId}
+    }]
   }, {
     test: /\.css/,
-    use: [
-        MiniCssExtractPlugin.loader,
-        cssLoader,
-        postcssLoader]
+    use: [MiniCssExtractPlugin.loader, {
+      loader: 'happypack/loader',
+      query: {id: cssHappyLoaderId}
     }]
+  }]
 
   plugins = [new MiniCssExtractPlugin({
     filename: '[name].css',
     // chunkFilename: "[id].css"
+  }), new HappyPack({
+    id: lessHappyLoaderId,
+    loaders: [
+      cssLoader,
+      postcssLoader,
+      lessLoader
+    ],
+    threadPool: happyThreadPool
+  }), new HappyPack({
+    id: cssHappyLoaderId,
+    loaders: [
+      cssLoader,
+      postcssLoader
+    ],
+    threadPool: happyThreadPool
   })]
 }
 

@@ -1,5 +1,7 @@
 const path = require('path');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const isDebug = process.env.NODE_ENV !== 'production';
@@ -17,6 +19,7 @@ const base = {
     chunkFilename: '[name].[chunkhash].chunk.js'
   },
   devServer: {
+    contentBase: [path.join(process.cwd(), './vendor-dev/'), path.join(process.cwd(), './vendor/')],
     hot: true,
     compress: false,
     historyApiFallback: true,
@@ -40,7 +43,29 @@ const base = {
       }
     }]
   },
+  optimization: {
+    minimize: !isDebug,
+    minimizer: !isDebug ? [new UglifyJsPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true,
+      uglifyOptions: {
+        comments: false,
+        warnings: false,
+        compress: {
+          unused: true,
+          dead_code: true,
+          collapse_vars: true,
+          reduce_vars: true
+        },
+        output: {
+          comments: false
+        }
+      }
+    })] : []
+  },
   plugins: [
+    new ProgressBarPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(process.cwd(), './index.html')
@@ -49,7 +74,7 @@ const base = {
 };
 
 if (isDebug) {
-  base.entry.unshift(`webpack-dev-server/client?http://${host}:${port}`, 'webpack/hot/dev-server');
+  base.entry.unshift('react-hot-loader/patch',  `webpack-dev-server/client?http://${host}:${port}`, 'webpack/hot/dev-server');
   base.plugins.unshift(new webpack.HotModuleReplacementPlugin());
   base.devtool = 'source-map';
 } else {
