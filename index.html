@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>七夕快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style>
+  body {
+    overflow: hidden;
+    background-color: darkslategray;
+  }
+
+  * {
+    transition: all ease 1s;
+  }
+
+  .div {
+    width: 100px;
+    height: 100px;
+    background: #E88D8D;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    margin-left: -50px;
+    transform: rotate(45deg);
+    border-radius: 20px;
+  }
+
+  .div::before {
+    content: '';
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left: -38px;
+    top: 1px;
+    border-radius: 50%;
+    background: #E88D8D;
+    transition: all ease 1s;
+  }
+
+  .div::after {
+    content: '';
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    right: -1px;
+    top: -40px;
+    border-radius: 50%;
+    background: #E88D8D;
+    transition: all ease 1s;
+  }
+
+  h1 {
+    opacity: 1;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    margin-left: -100px;
+    transition: all ease 1s;
+    color: white;
+    font-family: "Microsoft Yahei";
+    font-weight: 700;
+    transform: translate(0px, -100px);
+  }
+
+  h1::before {
+    content: '陈津,';
+    position: absolute;
+    margin-top: -50px;
+    margin-left: -10px;
+  }
+
+  .show {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .d2 {
+    z-index: -1;
+    opacity: 0.2;
+    animation: my 1s infinite linear;
+  }
+
+  @keyframes my {
+    0% {
+      transform: scale(1) rotate(45deg);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1.65) rotate(45deg);
+      opacity: 0
+    }
+  }
+</style>
+
+<body>
+  <div class="div">
+  </div>
+  <h1>I Love You</h1>
+  <div class="div d2">
+  </div>
+  <div id="app"></div>
+<script type="text/javascript" src="/main.js"></script></body>
+
+</html>
