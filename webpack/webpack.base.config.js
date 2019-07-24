@@ -5,7 +5,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const isDebug = process.env.NODE_ENV !== 'production';
-const host = 'localhost';
+const host = '0.0.0.0';
 const port = 8080;
 
 const releasePath = path.resolve(__dirname, '../dist');
