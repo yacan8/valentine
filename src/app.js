@@ -46,7 +46,7 @@ body, html {
   overflow: auto;
   ${ isPc ? `width: 48vw;
   height: 96vh;` : `width: 96vw;
-  height: 38vh;` }
+  height: 48vh;` }
   border: 1px solid;
   font-size: 14px;
   line-height: 1.5;
@@ -83,7 +83,7 @@ html{
 .heartWrapper {
   ${ isPc ? `width: 48vw;
   height: 96vh;` : `width: 96vw;
-  height: 56vh;` }
+  height: 48vh;` }
   position: relative;
   border: 1px solid;
   ${ isPc ?
