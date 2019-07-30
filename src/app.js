@@ -1,26 +1,28 @@
 import React from 'react';
 import StyleEditor from './styleEditor';
 import Heart from './heart';
-const isPc = (function() {
-  var userAgentInfo = navigator.userAgent;
-  var Agents = ["Android", "iPhone",
-      "SymbianOS", "Windows Phone",
-      "iPad", "iPod"
-  ];
-  var flag = true;
-  for (var v = 0; v < Agents.length; v++) {
-      if (userAgentInfo.indexOf(Agents[v]) > 0) {
-          flag = false;
-          break;
-      }
-  }
-  return flag;
+import HeartRain from './heartRain';
+
+const isPc = (function () {
+    var userAgentInfo = navigator.userAgent;
+    var Agents = ["Android", "iPhone",
+        "SymbianOS", "Windows Phone",
+        "iPad", "iPod"
+    ];
+    var flag = true;
+    for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
 }());
 
 export default class App extends React.Component {
 
-  fullStyle = [
-    `/*
+    fullStyle = [
+        `/*
 * Hi。宝贝！
 * 这么久了。还没和宝贝说过我的工作呢！
 * 我是个前端工程师。俗称程序员。网页相关。
@@ -79,21 +81,14 @@ html{
 * 用代码画一个爱心。
 */
 
-/* 首先，来一个画布 */
+/* 首先，来一个画板 */
 .heartWrapper {
   ${ isPc ? `width: 48vw;
   height: 96vh;` : `width: 96vw;
   height: 48vh;` }
   position: relative;
-  border: 1px solid;
-  ${ isPc ?
-  `-webkit-transform: rotateY(-10deg) translateZ(-100px);
-           transform: rotateY(-10deg) translateZ(-100px);` :
-  `-webkit-transform: rotateX(10deg) translateZ(-100px);
-           transform: rotateX(10deg) translateZ(-100px);`}
-  ${ isPc ? '' :
-  `-webkit-transform-origin: 50% 0% 0;
-           transform-origin: 50% 0% 0;`}
+  border: 5px solid;
+  border-radius: 5px;
 }
 
 /* 画一个方块，当左心室和右心室 */
@@ -151,48 +146,59 @@ html{
   animation: my 1s infinite linear;
 }
 /* Ok，完成 */
-`]
+`
+    ]
 
-  state = {
-    currentStyleCode: ''
-  }
-  
-  // interval = 40;
-  interval = 0;
+    state = {
+        currentStyleCode: ''
+    }
 
-  async progressiveShowStyle(n = 0) {
-    const { interval, fullStyle } = this;
-    const showStyle = i => new Promise((resolve) => {
-      const style = fullStyle[n];
-      const char = style[i];
-      if (!style || !char) {
-        resolve();
-        return;
-      }
-      let { currentStyleCode } = this.state;
-      currentStyleCode += char;
-      this.setState({currentStyleCode});
-      if (char === '\n' && this.styleEditor) {
-        this.styleEditor.toBottom();
-      }
-      setTimeout(() => {
-        resolve(showStyle(i + 1))
-      }, interval);
-    });
-    return showStyle(0);
-  }
+    // interval = 40;
+    interval = 0;
 
-  async componentDidMount() {
-    await this.progressiveShowStyle(0);
-  }
+    async progressiveShowStyle(n = 0) {
+        const {
+            interval,
+            fullStyle
+        } = this;
+        const showStyle = i => new Promise((resolve) => {
+            const style = fullStyle[n];
+            const char = style[i];
+            if (!style || !char) {
+                resolve();
+                return;
+            }
+            let {
+                currentStyleCode
+            } = this.state;
+            currentStyleCode += char;
+            this.setState({
+                currentStyleCode
+            });
+            if (char === '\n' && this.styleEditor) {
+                this.styleEditor.toBottom();
+            }
+            setTimeout(() => {
+                resolve(showStyle(i + 1))
+            }, interval);
+        });
+        return showStyle(0);
+    }
 
-  saveStyleEditorRef = child => this.styleEditor = child;
+    async componentDidMount() {
+        await this.progressiveShowStyle(0);
+    }
 
-  render() {
-    const { currentStyleCode } = this.state;
-    return <div style={{display: isPc ? 'flex' : ''}}>
-        <StyleEditor ref={this.saveStyleEditorRef} code={currentStyleCode}/>
-        <Heart />
-      </div>;
-  }
+    saveStyleEditorRef = child => this.styleEditor = child;
+
+    render() {
+        const { currentStyleCode } = this.state;
+        return <div>
+                <div style = {{display: isPc ? 'flex' : ''}}>
+                    <StyleEditor ref={this.saveStyleEditorRef} code={currentStyleCode}/>
+                    <Heart />
+                </div>
+                <HeartRain />
+            </div>;
+    }
 }
