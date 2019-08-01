@@ -133,7 +133,7 @@ html{
   height: 100px;
   position: absolute;
   right: -1px;
-  top: -40px;
+  top: -38px;
 }
 
 /* 太单调了，让心跳动起来 */
