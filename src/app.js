@@ -87,8 +87,16 @@ html{
   height: 96vh;` : `width: 96vw;
   height: 48vh;` }
   position: relative;
-  border: 5px solid;
-  border-radius: 5px;
+  border: 1px solid;
+  background-color: white;
+  ${ isPc ?
+  `-webkit-transform: rotateY(-10deg) translateZ(-100px);
+           transform: rotateY(-10deg) translateZ(-100px);` :
+  `-webkit-transform: rotateX(10deg) translateZ(-100px);
+           transform: rotateX(10deg) translateZ(-100px);`}
+    ${ isPc ? '' :
+  `-webkit-transform-origin: 50% 0% 0;
+           transform-origin: 50% 0% 0;`}
 }
 
 /* 画一个方块，当左心室和右心室 */
@@ -129,7 +137,7 @@ html{
 }
 
 /* 太单调了，让心跳动起来 */
-@keyframes my {
+@keyframes throb {
   0% {
     transform: scale(1) rotate(45deg);
     opacity: 1;
@@ -143,18 +151,20 @@ html{
 
 .bounce {
   opacity: 0.2;
-  animation: my 1s infinite linear;
+  animation: throb 1s infinite linear;
 }
 /* Ok，完成 */
 `
     ]
 
     state = {
-        currentStyleCode: ''
+        currentStyleCode: '',
+        finished: false,
+        heartRains: []
     }
 
-    // interval = 40;
-    interval = 0;
+    interval = 30;
+    // interval = 0;
 
     async progressiveShowStyle(n = 0) {
         const {
@@ -187,18 +197,41 @@ html{
 
     async componentDidMount() {
         await this.progressiveShowStyle(0);
+        this.setState({finished: true});
     }
 
     saveStyleEditorRef = child => this.styleEditor = child;
+    
+    rain = () => {
+        let { heartRains } = this.state;
+        const rainNum = 20;
+        const stayTime = rainNum * 200 + 1000 + 4000;
+        const time = (new Date()).getTime();
+        if (!heartRains.length || (time - heartRains[heartRains.length - 1].time > (stayTime / 2))) {
+            heartRains.push({time, rainNum});
+            this.setState({heartRains});
+            setTimeout(() => {
+                this.removeRain(time);
+            }, stayTime);
+        }
+    }
+
+    removeRain(time) {
+        let { heartRains } = this.state;
+        heartRains = heartRains.filter(item => item.time !== time);
+        this.setState({heartRains});
+    }
 
     render() {
-        const { currentStyleCode } = this.state;
+        const { currentStyleCode, finished, heartRains } = this.state;
         return <div>
-                <div style = {{display: isPc ? 'flex' : ''}}>
-                    <StyleEditor ref={this.saveStyleEditorRef} code={currentStyleCode}/>
-                    <Heart />
-                </div>
-                <HeartRain />
-            </div>;
+            <div style = {{display: isPc ? 'flex' : ''}}>
+                <StyleEditor ref={this.saveStyleEditorRef} code={currentStyleCode}/>
+                <Heart click={finished ? this.rain: null}/>
+            </div>
+            {
+                heartRains.map(item => <HeartRain num={item.rainNum} key={item.time}/>)
+            }
+        </div>;
     }
 }

@@ -9,6 +9,7 @@ class Rain extends React.Component {
 
     start = [0, 0];
     end = [0, 0];
+    endTime = 0;
 
     init() {
         const { innerWidth, innerHeight } = window;
@@ -18,6 +19,7 @@ class Rain extends React.Component {
         const endX = randomNumber(0, innerWidth);
         const endY = innerHeight + 30;
         this.end = [endX, endY];
+        this.endTime = randomNumber(3, 3.5) * 1000;
     }
 
     componentWillMount() {
@@ -27,20 +29,28 @@ class Rain extends React.Component {
     componentDidMount() {
         const { delay } = this.props;
         setTimeout(() => {
-            const { end } = this;
-            this.dom.style.left = `${end[0]}px`;
-            this.dom.style.top = `${end[1]}px`;
+            if (this.dom) {
+                const { end } = this;
+                this.dom.style.left = `${end[0]}px`;
+                this.dom.style.top = `${end[1]}px`;
+            }
+            setTimeout(() => {
+                if (this.dom) {
+                    this.dom.style.display = 'none';
+                }
+            }, this.endTime);
         }, delay);
+        
     }
 
     saveRef = c => this.dom = c;
 
     render() {
-        const { start } = this;
+        const { start, endTime } = this;
         return <span ref={this.saveRef} className="rain" style={{
             left: start[0],
             top: start[1],
-            transition: `all ${randomNumber(3, 3.5)}s`,
+            transition: `all ${endTime / 1000}s`,
             transitionTimingFunction: 'linear',
             fontSize: 20
         }}>
@@ -60,10 +70,10 @@ export default class HeartRain extends React.Component {
     }
     
     init() {
-        const rainNum = randomNumber(30, 40);
+        const rainNum = this.props.num;
         for (let i = 0; i < rainNum; i++) {
             const delay = randomNumber(i * 200, i * 200 + 1000)
-            this.queue.push(<Rain delay={delay}/>);
+            this.queue.push(<Rain key={i} delay={delay}/>);
         }
         const container = document.createElement('div');
         this.container = container;
@@ -75,6 +85,15 @@ export default class HeartRain extends React.Component {
             <div>{this.queue}</div>,
             this.container
         );
+    }
+
+    componentWillUnmount() {
+        if (this.container) {
+            ReactDOM.unmountComponentAtNode(this.container);
+            document.body.removeChild(this.container);
+            this.container = null;
+            this.queue = null;
+        }
     }
 
     render() {
