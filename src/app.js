@@ -64,16 +64,16 @@ body, html {
 
 /* 加个 3D 效果 */
 html{
+  perspective: 1000px;
   -webkit-perspective: 1000px;
-          perspective: 1000px;
 }
 
 .styleEditor {
-  ${ isPc ? `-webkit-transform: rotateY(10deg) translateZ(-100px);
-  transform: rotateY(10deg) translateZ(-100px) ;` : `-webkit-transform: rotateX(-10deg) translateZ(-100px);
-  transform: rotateX(-10deg) translateZ(-100px);` }
-  ${ isPc ? '' : `-webkit-transform-origin: 50% 0% 0;
-  transform-origin: 50% 0% 0;` }
+  ${ isPc ? `transform: rotateY(10deg) translateZ(-100px) ;
+  -webkit-transform: rotateY(10deg) translateZ(-100px);` : `transform: rotateX(-10deg) translateZ(-100px);
+  -webkit-transform: rotateX(-10deg) translateZ(-100px);` } ${ isPc ? '' : `
+  transform-origin: 50% 0% 0;
+  -webkit-transform-origin: 50% 0% 0;` }
 }
 
 /*
@@ -85,18 +85,17 @@ html{
 .heartWrapper {
   ${ isPc ? `width: 48vw;
   height: 96vh;` : `width: 96vw;
-  height: 48vh;` }
+  height: 48vh;`}
   position: relative;
   border: 1px solid;
   background-color: white;
   ${ isPc ?
-  `-webkit-transform: rotateY(-10deg) translateZ(-100px);
-           transform: rotateY(-10deg) translateZ(-100px);` :
-  `-webkit-transform: rotateX(10deg) translateZ(-100px);
-           transform: rotateX(10deg) translateZ(-100px);`}
-    ${ isPc ? '' :
-  `-webkit-transform-origin: 50% 0% 0;
-           transform-origin: 50% 0% 0;`}
+  `transform: rotateY(-10deg) translateZ(-100px);
+  -webkit-transform: rotateY(-10deg) translateZ(-100px);` :
+  `transform: rotateX(10deg) translateZ(-100px);
+  -webkit-transform: rotateX(10deg) translateZ(-100px);`}${ isPc ? '' :`
+  transform-origin: 50% 0% 0;
+  -webkit-transform-origin: 50% 0% 0;`}
 }
 
 /* 画一个方块，当左心室和右心室 */
@@ -153,7 +152,8 @@ html{
   opacity: 0.2;
   animation: throb 1s infinite linear;
 }
-/* Ok，完成 */
+/* Ok，完成！再送漫天的爱心！ */
+
 `
     ]
 
@@ -163,8 +163,8 @@ html{
         heartRains: []
     }
 
-    interval = 30;
-    // interval = 0;
+    // interval = 30;
+    interval = 0;
 
     async progressiveShowStyle(n = 0) {
         const {
@@ -198,13 +198,14 @@ html{
     async componentDidMount() {
         await this.progressiveShowStyle(0);
         this.setState({finished: true});
+        this.rain();
     }
 
     saveStyleEditorRef = child => this.styleEditor = child;
     
     rain = () => {
         let { heartRains } = this.state;
-        const rainNum = 20;
+        const rainNum = 30;
         const stayTime = rainNum * 200 + 1000 + 4000;
         const time = (new Date()).getTime();
         if (!heartRains.length || (time - heartRains[heartRains.length - 1].time > (stayTime / 2))) {

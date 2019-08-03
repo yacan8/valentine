@@ -14,7 +14,7 @@ const base = {
   entry: [path.join(process.cwd(), 'src/main')],
   mode: isDebug ? 'development' : 'production',
   output: {
-    publicPath: './',
+    publicPath: '/',
     path: releasePath,
     chunkFilename: '[name].[chunkhash].chunk.js'
   },
