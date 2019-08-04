@@ -163,8 +163,8 @@ html{
         heartRains: []
     }
 
-    // interval = 30;
-    interval = 0;
+    interval = 30;
+    // interval = 0;
 
     async progressiveShowStyle(n = 0) {
         const {
