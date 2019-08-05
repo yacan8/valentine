@@ -152,7 +152,10 @@ html{
   opacity: 0.2;
   animation: throb 1s infinite linear;
 }
-/* Ok，完成！再送漫天的爱心！ */
+/*
+* Ok，完成！再送漫天的爱心！
+* 宝贝，七夕快乐！
+*/
 
 `
     ]
