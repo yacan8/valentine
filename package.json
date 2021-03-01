@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/yacan8/valentine#readme",
   "dependencies": {
-    "prismjs": "^1.17.1",
+    "prismjs": "^1.23.0",
     "react": "16.0",
     "react-dom": "16.0"
   },
